@@ -75,7 +75,11 @@ class NEODatabase:
         :param filters: 사용자 지정 기준을 캡처하는 필터의 컬렉션입니다.
         :return: 일치하는 `CloseApproach` 객체의 스트림.
         """
-
-        # TODO: 모든 필터와 일치하는 `CloseApproach` 객체를 생성합니다.
-        for approach in self._approaches:
-            yield approach
+        
+        if filters:
+            for approach in self._approaches:
+                if all(map(lambda f: f(approach), filters)):
+                    yield approach
+        else:
+            for approach in self._approaches:
+                yield approach

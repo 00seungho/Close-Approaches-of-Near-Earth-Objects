@@ -101,7 +101,7 @@ class CloseApproach:
         self._designation = None if info.get('_designation', '') == '' else info.get('_designation')
         self.time = info.get('time', '')  # TODO: Use the cd_to_datetime function for this attribute. cd_to_datetime이용해 문제 풀이
         self.distance = float('nan') if info.get('distance', '') == '' else info.get('distance')
-        self.velocity = float('nan') if info.get('velocity', '') == '' else info.get('velocity')
+        self.velocity = float('nan') if float(info.get('velocity', '')) == '' else float(info.get('velocity'))
         self.time = cd_to_datetime(self.time)
 
         # 참조된 NEO(근지 천체)를 위한 속성을 생성합니다. 원래 None이었습니다.
