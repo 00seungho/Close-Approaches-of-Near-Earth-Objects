@@ -56,26 +56,46 @@ class AttributeFilter:
 class DistanceFilter(AttributeFilter):
     @classmethod
     def get(cls, approach):
+        """
+        :param approach: A `CloseApproach` on which to evaluate this filter.
+        :return: The distance of the approach.
+        """
         return approach.distance
 
 class DateFilter(AttributeFilter):
     @classmethod
     def get(cls, approach):
+        """
+        :param approach: A `CloseApproach` on which to evaluate this filter.
+        :return: The date of the approach.
+        """
         return approach.time.date()
 
 class VelocityFilter(AttributeFilter):
     @classmethod
     def get(cls, approach):
+        """
+        :param approach: A `CloseApproach` on which to evaluate this filter.
+        :return: The velocity of the approach.
+        """
         return approach.velocity
 
 class DiameterFilter(AttributeFilter):
     @classmethod
-    def get(cls, approach):
+    def get(cls, approach):        
+        """
+        :param approach: A `CloseApproach` on which to evaluate this filter.
+        :return: The diameter of the NEO associated with the approach.
+        """    
         return approach.neo.diameter
 
 class HazardousFilter(AttributeFilter):
     @classmethod
     def get(cls, approach):
+        """
+        :param approach: A `CloseApproach` on which to evaluate this filter.
+        :return: The hazardous of the NEO associated with the approach.
+        """  
         return approach.neo.hazardous
 
 def create_filters(
