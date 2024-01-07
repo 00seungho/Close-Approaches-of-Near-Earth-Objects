@@ -1,9 +1,3 @@
-
-"""CSV 및 JSON 파일에서 지구 인근 물체 및 근접 접근 데이터 추출
-load_neos 함수는 프로젝트 지침에 설명된대로 포맷된 CSV 파일에서 NEO(지구 인근 물체) 데이터를 추출하여 NearEarthObject 컬렉션으로 저장합니다.
-load_approaches 함수는 프로젝트 지침에 설명된대로 포맷된 JSON 파일에서 근접 접근 데이터를 추출하여 CloseApproach 객체의 컬렉션으로 저장합니다.
-주 모듈은 이러한 함수를 커맨드 라인에서 제공된 인수와 함께 호출하며, 생성된 컬렉션을 사용하여 NEODatabase를 구축합니다.
-이 파일은 작업 2에서 편집하게 됩니다."""
 import csv
 import json
 

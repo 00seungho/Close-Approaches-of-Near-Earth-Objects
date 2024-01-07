@@ -1,16 +1,3 @@
-""""근접 지구 물체와 그 근접 접근 방법의 집합을 캡슐화하는 데이터베이스.
-
-'NEO 데이터베이스'는 서로 연결된 NEO 데이터 세트와 근접 접근 방식을 보유하고 있습니다.
-주 이름 또는 이름으로 NEO를 가져오는 방법도 제공합니다
-다음의 집합과 일치하는 근접 접근법의 집합을 쿼리하는 방법으로서
-사용자 지정 기준.
-
-일반적인 상황에서 메인 모듈은 하나의 NEOD 데이터베이스를 생성합니다
-'extract.load_neos'에 의해 추출된 NEO와 근접 접근법에 대한 데이터
-extract.load_approachs.
-
-작업 2와 작업 3에서 이 파일을 편집합니다.
-"""
 class NEODatabase:
     """A database of near-Earth objects and their close approaches.
 
