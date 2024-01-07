@@ -14,16 +14,16 @@ import csv
 from models import NearEarthObject
 
 def load_neos(neo_csv_path):
-    """CSV 파일에서 지구 인근 물체 정보를 읽습니다.
+    """Read near-Earth object information from a CSV file.
 
-    :param neo_csv_path: 지구 인근 물체에 관한 데이터가 포함된 CSV 파일의 경로입니다.
-    :return: NearEarthObject 객체의 컬렉션.
+    :param neo_csv_path: A path to a CSV file containing data about near-Earth objects.
+    :return: A collection of `NearEarthObject`s.
     """
-    neos = []  # Create an empty list to store NEO objects
+    neos = [] 
 
     with open(neo_csv_path, "r") as file:
         reader = csv.reader(file)
-        next(reader)  # Skip the header row
+        next(reader)
         for row in reader:
             if row[15]:
                 dbdiameter = float(row[15])
@@ -35,12 +35,12 @@ def load_neos(neo_csv_path):
     return neos
 
 def load_approaches(cad_json_path):
-    """JSON 파일에서 근접 접근 데이터를 읽습니다.
+    """Read close approach data from a JSON file.
 
-    :param cad_json_path: 근접 접근에 관한 데이터가 포함된 JSON 파일의 경로입니다.
-    :return: CloseApproach 객체의 컬렉션.
+    :param cad_json_path: A path to a JSON file containing data about close approaches.
+    :return: A collection of `CloseApproach`es.
     """
-    close_approaches = []  # Create an empty list to store CloseApproach objects
+    close_approaches = [] 
     with open(cad_json_path, "r") as file:
         data = json.load(file)
         fields = data['fields']
