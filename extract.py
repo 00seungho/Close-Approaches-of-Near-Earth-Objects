@@ -54,7 +54,7 @@ def load_approaches(cad_json_path):
                 float_v_rel = float(ca_data['v_rel'])
             else:
                 float_v_rel=float('nan')
-            ca = CloseApproach(_designation = ca_data['des'],time=ca_data['cd'],distance= float_dist,velocity = float_dist)
+            ca = CloseApproach(_designation = ca_data['des'],time=ca_data['cd'],distance= float_dist,velocity = float_v_rel)
             close_approaches.append(ca)
 
     return close_approaches

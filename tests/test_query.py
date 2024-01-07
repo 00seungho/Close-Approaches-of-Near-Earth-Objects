@@ -259,7 +259,6 @@ class TestQuery(unittest.TestCase):
 
         filters = create_filters(diameter_min=diameter_min)
         received = set(self.db.query(filters))
-
         self.assertEqual(expected, received, msg="Computed results do not match expected results.")
 
     def test_query_with_max_diameter_and_min_diameter(self):

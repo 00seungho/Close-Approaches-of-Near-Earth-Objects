@@ -12,18 +12,30 @@ extract.load_approachs.
 작업 2와 작업 3에서 이 파일을 편집합니다.
 """
 class NEODatabase:
+    """A database of near-Earth objects and their close approaches.
+
+    A `NEODatabase` contains a collection of NEOs and a collection of close
+    approaches. It additionally maintains a few auxiliary data structures to
+    help fetch NEOs by primary designation or by name and to help speed up
+    querying for close approaches that match criteria.
+    """
     def __init__(self, neos, approaches):
-        """새로운 `NEODatabase`를 생성합니다.
-        이 생성자의 사전 조건으로는 NEO 및 근접 접근 정보의 컬렉션이 아직 연결되지 않았다고 가정합니다. 
-        즉, 각 `NearEarthObject`의 `.approaches` 속성은 비어있는 컬렉션을 참조하고 있으며, 
-        각 `CloseApproach`의 `.neo` 속성은 None입니다.
-        그러나 각 `CloseApproach`에는 해당 NEO의 
-        `.designation` 속성과 일치하는 `.designation` 
-        속성을 가지고 있습니다. 이 생성자는 제공된 NEO와 근접 접근 정보(approaches)를 연결하여 
-        NEO의 각 근접 접근 정보에 대한 컬렉션을 포함하고 각 근접 접근 정보의 
-        `.neo` 속성이 해당 NEO를 참조하도록 수정합니다.
-        :param neos: `NearEarthObject`의 컬렉션.
-        :param approaches: `CloseApproach`의 컬렉션.
+        """Create a new `NEODatabase`.
+
+        As a precondition, this constructor assumes that the collections of NEOs
+        and close approaches haven't yet been linked - that is, the
+        `.approaches` attribute of each `NearEarthObject` resolves to an empty
+        collection, and the `.neo` attribute of each `CloseApproach` is None.
+
+        However, each `CloseApproach` has an attribute (`._designation`) that
+        matches the `.designation` attribute of the corresponding NEO. This
+        constructor modifies the supplied NEOs and close approaches to link them
+        together - after it's done, the `.approaches` attribute of each NEO has
+        a collection of that NEO's close approaches, and the `.neo` attribute of
+        each close approach references the appropriate NEO.
+
+        :param neos: A collection of `NearEarthObject`s.
+        :param approaches: A collection of `CloseApproach`es.
         """
 
         self._neos = neos
@@ -34,12 +46,17 @@ class NEODatabase:
                     neo.approaches.append(approache)
                     approache.neo = neo
     def get_neo_by_designation(self, designation):
-        """주요 지정으로 NEO를 찾아서 반환합니다.
-        일치하는 항목이 없으면 대신 `None`을 반환합니다.
-        데이터 집합의 각 NEO는 문자열로 고유한 주요 지정을 가지고 있습니다.`
-        일치는 정확해야 합니다 - 일치하는 항목을 찾을 수 없는 경우 철자와 대문자를 확인하세요.
-        :param designation: 찾으려는 NEO의 주요 지정.
-        :return: 원하는 주요 지정을 가진 `NearEarthObject` 또는 `None`.
+        """Find and return an NEO by its primary designation.
+
+        If no match is found, return `None` instead.
+
+        Each NEO in the data set has a unique primary designation, as a string.
+
+        The matching is exact - check for spelling and capitalization if no
+        match is found.
+
+        :param designation: The primary designation of the NEO to search for.
+        :return: The `NearEarthObject` with the desired primary designation, or `None`.
         """
         for neo in self._neos:
             if neo.designation == designation:
@@ -47,16 +64,18 @@ class NEODatabase:
         return None
 
     def get_neo_by_name(self, name):
-        """이름으로 NEO를 찾아서 반환합니다.
+        """Find and return an NEO by its name.
 
-        일치하는 항목이 없으면 대신 `None`을 반환합니다.
+        If no match is found, return `None` instead.
 
-        데이터 집합의 모든 NEO에 이름이 있는 것은 아닙니다. NEO와 빈 문자열 또는 `None` 싱글톤은 연결되지 않습니다.
+        Not every NEO in the data set has a name. No NEOs are associated with
+        the empty string nor with the `None` singleton.
 
-        일치는 정확해야 합니다 - 일치하는 항목을 찾을 수 없는 경우 철자와 대문자를 확인하세요.
+        The matching is exact - check for spelling and capitalization if no
+        match is found.
 
-        :param name: 찾으려는 NEO의 이름(문자열)입니다.
-        :return: 원하는 이름을 가진 `NearEarthObject` 또는 `None`.
+        :param name: The name, as a string, of the NEO to search for.
+        :return: The `NearEarthObject` with the desired name, or `None`.
         """
         for neo in self._neos:
             if neo.name == name:
@@ -64,16 +83,18 @@ class NEODatabase:
         return None
 
     def query(self, filters=()):
-        """일련의 필터와 일치하는 근접 접근을 쿼리하여 생성합니다.
+        """Query close approaches to generate those that match a collection of filters.
 
-        이는 제공된 모든 필터와 일치하는 `CloseApproach` 객체의 스트림을 생성합니다.
+        This generates a stream of `CloseApproach` objects that match all of the
+        provided filters.
 
-        인수를 제공하지 않으면 모든 알려진 근접 접근을 생성합니다.
+        If no arguments are provided, generate all known close approaches.
 
-        `CloseApproach` 객체는 내부 순서대로 생성되며 의미 있는 순서로 정렬되지 않을 수 있으며, 일반적으로 시간대로 정렬됩니다.
+        The `CloseApproach` objects are generated in internal order, which isn't
+        guaranteed to be sorted meaninfully, although is often sorted by time.
 
-        :param filters: 사용자 지정 기준을 캡처하는 필터의 컬렉션입니다.
-        :return: 일치하는 `CloseApproach` 객체의 스트림.
+        :param filters: A collection of filters capturing user-specified criteria.
+        :return: A stream of matching `CloseApproach` objects.
         """
         
         if filters:

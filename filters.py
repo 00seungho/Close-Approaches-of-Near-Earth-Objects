@@ -5,33 +5,48 @@ class UnsupportedCriterionError(NotImplementedError):
     pass
 
 class AttributeFilter:
-    """비교 가능한 속성에 대한 필터링을 위한 일반적인 수퍼 클래스입니다.
-    AttributeFilter는 가까운 접근(또는 연결된 NEO)의 특정 속성을 참조 값과 비교하는 검색 기준 패턴을 나타냅니다. 
-    사실상 CloseApproach 객체가 인코딩된 기준을 만족하는지 여부를 확인하는 호출 가능한 조건자 역할을 합니다.
-    비교 연산자와 참조 값으로 구성되며, 이 필터를 호출하면 (call 사용) get(approach) OP value (중위 표기법)를 실행합니다.
-    구체적인 서브 클래스는 주어진 CloseApproach에서 원하는 속성을 검색하기 위해 get 클래스 메서드를 오버라이드하여 사용자 정의 동작을 제공할 수 있습니다.
+    """A general superclass for filters on comparable attributes.
+
+    An `AttributeFilter` represents the search criteria pattern comparing some
+    attribute of a close approach (or its attached NEO) to a reference value. It
+    essentially functions as a callable predicate for whether a `CloseApproach`
+    object satisfies the encoded criterion.
+
+    It is constructed with a comparator operator and a reference value, and
+    calling the filter (with __call__) executes `get(approach) OP value` (in
+    infix notation).
+
+    Concrete subclasses can override the `get` classmethod to provide custom
+    behavior to fetch a desired attribute from the given `CloseApproach`.
     """
+
     def __init__(self, op, value):
-        """
-        이너리 술부 함수와 참조 값에서 새로운 AttributeFilter를 구성합니다.
-        참조 값은 연산자 함수의 두 번째(오른쪽) 인자로 제공됩니다. 예를 들어, op=operator.le 및 value=10을 가진 AttributeFilter는 접근에 대해 호출되면 some_attribute <= 10을 평가합니다.
-        :param op: 2-인자 술부 비교자(예: operator.le).
-        :param value: 비교 대상이 되는 참조 값입니다.
+        """Construct a new `AttributeFilter` from an binary predicate and a reference value.
+
+        The reference value will be supplied as the second (right-hand side)
+        argument to the operator function. For example, an `AttributeFilter`
+        with `op=operator.le` and `value=10` will, when called on an approach,
+        evaluate `some_attribute <= 10`.
+
+        :param op: A 2-argument predicate comparator (such as `operator.le`).
+        :param value: The reference value to compare against.
         """
         self.op = op
         self.value = value
 
     def __call__(self, approach):
-        """self(approach)를 호출합니다."""
+        """Invoke `self(approach)`."""
         return self.op(self.get(approach), self.value)
 
     @classmethod
     def get(cls, approach):
-        """
-        가까운 접근에서 관심 있는 속성을 가져옵니다.
-        구상 서브클래스는 이 메서드를 재정의하여 제공된 'CloseApproach'에서 관심 있는 속성을 가져와야 합니다.
-        :param approach: 이 필터를 평가할 'CloseApproach'.
-        :return: 'self.value'를 통해 'self.op'와 비교 가능한 관심 있는 속성의 값.
+        """Get an attribute of interest from a close approach.
+
+        Concrete subclasses must override this method to get an attribute of
+        interest from the supplied `CloseApproach`.
+
+        :param approach: A `CloseApproach` on which to evaluate this filter.
+        :return: The value of an attribute of interest, comparable to `self.value` via `self.op`.
         """
         raise UnsupportedCriterionError
 
@@ -80,28 +95,37 @@ def create_filters(
         "velocity_max": velocity_max,
         "diameter_min": diameter_min,
         "diameter_max": diameter_max,
-        "hazardous": False if hazardous == '--not-hazardous' else True
+        "hazardous": hazardous
     }
 
     filters = []
-    if filter_dic["date"]:
+    if filter_dic["date"] is not None:
         filters.append(DateFilter(operator.eq, filter_dic["date"]))
-    if filter_dic["start_date"]:
+
+    if filter_dic["start_date"] is not None:
         filters.append(DateFilter(operator.ge, filter_dic["start_date"]))
-    if filter_dic["end_date"]:
+
+    if filter_dic["end_date"] is not None:
         filters.append(DateFilter(operator.le, filter_dic["end_date"]))
-    if filter_dic["distance_min"]:
+
+    if filter_dic["distance_min"] is not None:
         filters.append(DistanceFilter(operator.ge, filter_dic["distance_min"]))
-    if filter_dic["distance_max"]:
+
+    if filter_dic["distance_max"] is not None:
         filters.append(DistanceFilter(operator.le, filter_dic["distance_max"]))
-    if filter_dic["velocity_min"]:
+
+    if filter_dic["velocity_min"] is not None:
         filters.append(VelocityFilter(operator.ge, filter_dic["velocity_min"]))
-    if filter_dic["velocity_max"]:
+
+    if filter_dic["velocity_max"] is not None:
         filters.append(VelocityFilter(operator.le, filter_dic["velocity_max"]))
-    if filter_dic["diameter_min"]:
+
+    if filter_dic["diameter_min"] is not None:
         filters.append(DiameterFilter(operator.ge, filter_dic["diameter_min"]))
-    if filter_dic["diameter_max"]:
+
+    if filter_dic["diameter_max"] is not None:
         filters.append(DiameterFilter(operator.le, filter_dic["diameter_max"]))
+        
     if filter_dic["hazardous"] is not None:
         filters.append(HazardousFilter(operator.eq, filter_dic["hazardous"]))
 
